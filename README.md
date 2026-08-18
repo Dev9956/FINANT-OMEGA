@@ -2,12 +2,13 @@
 
 **Financial Intelligence & Quantitative Research Engine**
 
-An evidence-grounded AI financial intelligence, quantitative research, portfolio analytics and investment research platform.
+An evidence-grounded AI financial intelligence, quantitative research, portfolio analytics and investment research platform with 133+ API endpoints, 13 integrated intelligence panels, and a Rust-powered quant engine.
 
 ## Architecture
 
-- **Python/FastAPI** — API layer, AI orchestration, data ingestion, RAG
-- **Rust** — High-performance quantitative engine (returns, statistics, portfolio, risk)
+- **Python/FastAPI** — API layer, AI orchestration, data ingestion, RAG (35+ route modules)
+- **React + TypeScript + Vite** — Terminal-style frontend with 45+ interfaces
+- **Rust** — High-performance quantitative engine (64 tests passing)
 - **PostgreSQL** — Metadata, research state, configuration
 - **ClickHouse** — Large-scale analytics, time-series data
 - **Redis** — Caching, queues, job coordination
@@ -19,6 +20,7 @@ An evidence-grounded AI financial intelligence, quantitative research, portfolio
 
 - Python 3.12+
 - Rust 1.75+
+- Node.js 18+
 - Docker & Docker Compose
 - uv (recommended) or pip
 
@@ -46,6 +48,87 @@ docker compose up -d postgres clickhouse redis
 
 # Start API
 python -m uvicorn apps.api.main:app --reload --port 8000
+
+# Start frontend
+cd terminal
+npm install
+npm run dev
+```
+
+## Features
+
+### Intelligence Modules
+
+| Module | Description |
+|--------|-------------|
+| AI Chat | Conversational research with evidence-grounded answers |
+| Deep Research | 10-stage research pipeline with task graph orchestration |
+| Evidence Graph | Knowledge graph with nodes, edges, and confidence scoring |
+| Thesis Engine | Create, track, and evaluate investment theses |
+| Cross-Entity | Multi-entity relationship analysis, weakening patterns, cashflow |
+| Predictions | Forecast creation with calibration and Brier score tracking |
+| Digital Twin | Company simulation engine with scenario modeling |
+| Quality Scoring | 8-dimension evidence quality evaluation |
+| Investment Memo | Auto-generated memos with markdown export |
+| Portfolio | CRUD positions with live market price refresh |
+| Risk Analytics | Volatility, Sharpe ratio, max drawdown, VaR, anomaly detection |
+| Scenario Analysis | Create scenarios with variable definitions and change tables |
+| Bull/Bear Debate | AI-powered argumentation with bull, bear, and base cases |
+| News & Alerts | Real-time monitoring alerts with early warning scan |
+| Integration Control | 9 providers, health checks, secrets, model routing |
+
+### Backend Highlights
+
+- **133 API paths** across 35+ route modules
+- **JWT authentication** with RBAC (4 roles, 15 permissions)
+- **Evidence-first design** — deterministic calculations precede LLM explanation
+- **Integration Control Plane** — OpenAI, Ollama, Anthropic, yfinance, SEC EDGAR, FRED, PostgreSQL, ClickHouse, Redis
+- **Research engine** with task graph, conflict resolution, evaluation, synthesis, stopping criteria, budget management
+
+### Frontend Highlights
+
+- **Terminal-style UI** with dark theme and 20+ color palette
+- **Workspace grid system** with draggable, resizable panels
+- **Command palette** (Ctrl+K) with 20+ quick actions
+- **Sidebar navigation** with 8 workspace categories
+- **Real-time data** — all 13 panels wired to live backend APIs
+
+## Project Structure
+
+```
+FININT OMEGA/
+├── apps/
+│   ├── api/               # FastAPI application (35+ route modules)
+│   └── worker/            # Background workers
+├── core/                  # Business modules
+│   ├── ai/                # AI orchestration (agents, LLM providers, guardrails)
+│   ├── analytics/         # Financial analytics (risk, portfolio, factors, scenarios)
+│   ├── auth/              # JWT auth, RBAC, security
+│   ├── data/              # Data connectors, quality, lineage, validation
+│   ├── evidence/          # Claim verification, confidence scoring, audit
+│   ├── integrations/      # Integration control plane (9 providers)
+│   ├── intelligence/      # 15+ intelligence engines
+│   ├── persistence/       # Database writers, thesis repository
+│   ├── rag/               # Retrieval-augmented generation
+│   ├── research/          # Research workflows, grid, scheduled, watchlist
+│   └── storage/           # Storage abstraction
+├── rust/finintel-engine/  # Rust quantitative engine
+│   └── src/               # Returns, statistics, portfolio, risk, scenarios, backtest
+├── terminal/              # React + TypeScript frontend
+│   └── src/
+│       ├── api/           # API client (40+ endpoints)
+│       ├── components/    # 20+ panel components
+│       ├── store/         # Zustand workspace state
+│       └── types/         # 45+ TypeScript interfaces
+├── tests/
+│   ├── unit/              # 817+ Python unit tests
+│   ├── integration/       # API integration tests
+│   └── live/              # Live verification tests
+├── db/
+│   ├── clickhouse/        # ClickHouse schemas
+│   └── migrations/        # PostgreSQL migrations
+├── docs/                  # Architecture, audit, intelligence documentation
+└── docker/                # Dockerfiles
 ```
 
 ## Testing
@@ -54,65 +137,15 @@ python -m uvicorn apps.api.main:app --reload --port 8000
 # Run all tests
 make test
 
-# Python tests only
+# Python tests only (817+)
 make test-python
 
-# Rust tests only
+# Rust tests only (64)
 make test-rust
+
+# Live verification (69/69 endpoints)
+python tests/live/comprehensive_verification.py
 ```
-
-## Project Structure
-
-```
-finintel-omega/
-├── apps/api/          # FastAPI application
-├── apps/worker/       # Background workers (future)
-├── core/              # Business modules
-│   ├── ai/            # AI orchestration
-│   ├── data/          # Data connectors & quality
-│   ├── rag/           # Retrieval-augmented generation
-│   ├── analytics/     # Financial analytics
-│   ├── intelligence/  # Events, thesis, knowledge graph
-│   ├── evidence/      # Claim verification
-│   └── research/      # Research workflows
-├── rust/finintel-engine/  # Rust quantitative engine
-├── db/                # Migrations & init scripts
-├── data/              # Data lake (Parquet)
-├── docs/              # Architecture & research docs
-├── tests/             # Test suites
-├── docker/            # Dockerfiles
-└── scripts/           # Utility scripts
-```
-
-## API Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/` | Service info |
-| GET | `/docs` | OpenAPI documentation |
-| GET | `/api/v1/system/health` | Health check (API + databases) |
-
-## Development Roadmap
-
-| Milestone | Name | Status |
-|-----------|------|--------|
-| M0 | Foundation | ✅ Current |
-| M1 | Data Infrastructure | Pending |
-| M2 | Market + Fundamentals | Pending |
-| M3 | Rust Quantitative Engine | Pending |
-| M4 | Backtesting + Simulation | Pending |
-| M5 | Document Intelligence | Pending |
-| M6 | Hybrid RAG | Pending |
-| M7 | NL Query Planner | Pending |
-| M8 | Evidence + Verification | Pending |
-| M9 | News + Earnings Intelligence | Pending |
-| M10 | Portfolio + Risk + Factors | Pending |
-| M11 | Scenario + Why-Moved + What-Changed | Pending |
-| M12 | Research Memory + Thesis + KG | Pending |
-| M13 | Alerts + Scheduled Research | Pending |
-| M14 | FinResearchBench | Pending |
-| M15 | Performance + Security | Pending |
-| M16 | Dashboard | Pending |
 
 ## Configuration
 
@@ -123,7 +156,22 @@ cp .env.example .env
 # Edit .env with your settings
 ```
 
+Key environment variables:
+
+```env
+DATABASE_URL=postgresql://...
+CLICKHOUSE_URL=http://...
+REDIS_URL=redis://...
+OPENAI_API_KEY=sk-...          # Optional — enables real LLM synthesis
+```
+
 **Never commit `.env` or any secrets.**
+
+## Credentials
+
+Default test credentials:
+- Email: `test@finint.dev`
+- Password: `test123`
 
 ## License
 
