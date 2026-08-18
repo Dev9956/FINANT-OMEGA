@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+*.egg
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Environment
+.env
+.venv/
+venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Rust
+rust/target/
+target/
+
+# Node
+terminal/node_modules/
+terminal/dist/
+
+# Data (large files)
+data/raw/
+data/bronze/
+data/silver/
+data/gold/
+data/integrations/
+
+# Docker
+*.log
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,15 @@
+[package]
+name = "finintel-engine"
+version = "0.1.0"
+edition = "2021"
+description = "FININT OMEGA — Quantitative Engine"
+
+[lib]
+name = "finintel_engine"
+crate-type = ["lib"]
+
+[dependencies]
+thiserror = "2"
+
+[dev-dependencies]
+approx = "0.5"

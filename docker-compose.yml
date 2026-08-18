@@ -1,0 +1,93 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: finintel-postgres
+    environment:
+      POSTGRES_DB: finintel_omega
+      POSTGRES_USER: finintel
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./db/migrations/postgres:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U finintel -d finintel_omega"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  clickhouse:
+    image: clickhouse/clickhouse-server:24.3-alpine
+    container_name: finintel-clickhouse
+    environment:
+      CLICKHOUSE_DB: finintel_omega
+      CLICKHOUSE_USER: default
+      CLICKHOUSE_PASSWORD: clickhouse_dev
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+      - ./db/clickhouse/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "wget --spider -q http://localhost:8123/ping || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: finintel-redis
+    command: redis-server --appendonly yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.api
+    container_name: finintel-api
+    ports:
+      - "8000:8000"
+    environment:
+      APP_ENV: development
+      APP_DEBUG: "true"
+      APP_LOG_LEVEL: INFO
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: finintel_omega
+      POSTGRES_USER: finintel
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me}
+      CLICKHOUSE_HOST: clickhouse
+      CLICKHOUSE_PORT: 8123
+      CLICKHOUSE_DB: finintel_omega
+      CLICKHOUSE_USER: default
+      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD:-}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_DB: "0"
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      clickhouse:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  clickhouse_data:
+  redis_data:

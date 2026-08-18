@@ -1,0 +1,3 @@
+[workspace]
+members = ["rust/finintel-engine"]
+resolver = "2"
