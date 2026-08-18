@@ -24,7 +24,8 @@ class Settings(BaseSettings):
             import os
             if os.getenv("APP_ENV") == "production":
                 raise ValueError("APP_SECRET_KEY must be set in production")
-            return os.urandom(32).hex()
+            default_key = "finint-omega-dev-secret-key-do-not-use-in-production"
+            return os.getenv("APP_SECRET_KEY", default_key)
         return v
 
     # PostgreSQL

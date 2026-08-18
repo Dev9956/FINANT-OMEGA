@@ -47,6 +47,7 @@ from apps.api.routes.digital_twin import router as digital_twin_router
 from apps.api.routes.quality import router as quality_router
 from apps.api.routes.memo import router as memo_router
 from core.auth.dependencies import get_current_user
+from core.persistence.db import init_db, close_db
 
 logger = structlog.get_logger()
 
@@ -164,6 +165,16 @@ def create_app() -> FastAPI:
     app.include_router(memo_router, dependencies=_auth)
     app.include_router(integrations_router, dependencies=_auth)
     app.include_router(portfolio_router, dependencies=_auth)
+
+    @app.on_event("startup")
+    async def startup():
+        await init_db()
+        logger.info("app_started", port=settings.api_port)
+
+    @app.on_event("shutdown")
+    async def shutdown():
+        await close_db()
+        logger.info("app_shutdown")
 
     return app
 

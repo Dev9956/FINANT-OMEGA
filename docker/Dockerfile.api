@@ -7,11 +7,24 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 COPY pyproject.toml .
-RUN pip install --no-cache-dir -e ".[dev]" 2>/dev/null || pip install --no-cache-dir fastapi uvicorn[standard] pydantic pydantic-settings structlog httpx redis asyncpg clickhouse-connect
+RUN pip install --no-cache-dir -e ".[dev]" || \
+    pip install --no-cache-dir \
+    fastapi \
+    "uvicorn[standard]" \
+    pydantic \
+    pydantic-settings \
+    structlog \
+    httpx \
+    redis \
+    asyncpg \
+    clickhouse-connect \
+    python-jose[cryptography] \
+    passlib[bcrypt] \
+    bcrypt==4.0.1
 
 COPY apps/ apps/
 COPY core/ core/
-COPY data/ data/
+COPY db/ db/
 
 EXPOSE 8000
 
